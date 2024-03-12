@@ -15,17 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 package com.adobe.cq.forms.core.components.it.service;
 
-
 import com.adobe.forms.common.service.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.Resource;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.gson.Gson;
-import com.google.common.reflect.TypeToken;
-import java.lang.reflect.Type;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -49,7 +44,7 @@ public class CustomAFPrefillService implements DataProvider {
      */
     @Override
     public String getServiceDescription() {
-        return "Core Custom Pre-fill Service";
+        return "Core Custom Pre-fill Service - SOC864";
     }
 
     /* (non-Javadoc)
@@ -57,7 +52,7 @@ public class CustomAFPrefillService implements DataProvider {
      */
     @Override
     public String getServiceName() {
-        return "Core Custom Pre-fill Service";
+        return "Core Custom Pre-fill Service - SOC864";
     }
 
     /* (non-Javadoc)
@@ -66,8 +61,6 @@ public class CustomAFPrefillService implements DataProvider {
     @Override
     public PrefillData getPrefillData(DataOptions dataOptions) throws FormsException {
         logger.info("Invoking AF custom prefill service");
-        Resource formResource = dataOptions.getFormResource();
-        Resource aemFormContainer = dataOptions.getAemFormContainer();
         InputStream dataInputStream = null;
         ContentType contentType = dataOptions.getContentType();
         Map<String, Object> extras = dataOptions.getExtras();
@@ -75,13 +68,15 @@ public class CustomAFPrefillService implements DataProvider {
         List<FileAttachmentWrapper> fileAttachmentWrappers = null;
         PrefillData prefillData = null;
         Map<String, String> customContext = null;
+
+        String jsonData = "{\r\n   \"SOC864\": {\r\n      \"preparer\": null,\r\n      \"name\": \"SOC864\",\r\n      \"generateLargeFontPdfAfterSubmission\": false,\r\n      \"externalId\": \"provider=0123456789\",\r\n      \"language\": \"en\",\r\n      \"id\": \"e7c737d2-8c0f-48b9-9aba-14572bfcf4ea\",\r\n      \"status\": [\r\n         \"IN_PROGRESS\"\r\n      ],\r\n      \"data\": {\r\n         \"socialWorkerIdentifier\": \"WO01\",\r\n         \"caseNumber\": \"1234567\",\r\n         \"countySocialServicesWorkerPhone\": \"(000) 555-1122\",\r\n         \"publicAuthorityPhone\": \"(000) 555-1212\",\r\n         \"countyIHSSSocialServicesOfficePhone\": \"(000) 555-1212\",\r\n         \"countySocialServicesWorkerName\": \"Kern County Worker\",\r\n         \"receipientFullName\": \"Daffy Duck\",\r\n         \"countyIHSSSocialServicesOfficeName\": \"Kern County IHSS\"\r\n      }\r\n   }\r\n}";
+        String id = "e7c737d2-8c0f-48b9-9aba-14572bfcf4ea";
+
         if(extras != null && extras.containsKey(DataManager.UNIQUE_ID) && dataManager != null) {
             String dataKey = extras.get(DataManager.UNIQUE_ID).toString();
-            if(dataManager.get(dataKey) != null) {
-                data = (String) dataManager.get(dataKey);
-                fileAttachmentWrappers = (List<FileAttachmentWrapper>) dataManager.get(DataManager.getFileAttachmentMapKey(dataKey));
+            if(StringUtils.equals(dataKey, id)) {
+                data = jsonData;
             }
-            customContext = dataManager.getCustomContext(dataKey);
         }
         if(StringUtils.isNotBlank(data)) {
             dataInputStream = getDataInputStream(data);

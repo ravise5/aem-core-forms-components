@@ -14,6 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 import {createFormInstance} from "@aemforms/af-core";
+import {Constants} from "../constants";
 
 /**
  * @module FormView
@@ -194,6 +195,11 @@ class FormContainer {
       this.setFocus(activeChild?._activeChild?.id || activeChild?.id);
     }
 
+    #focusOnFirstInvalidField(invalidFieldArray) {
+        const id = invalidFieldArray[0].fieldName;
+        this.setFocus(id);
+    }
+
     /**
        * Subscribes to model changes and updates the corresponding properties in the view.
        * @override
@@ -212,6 +218,12 @@ class FormContainer {
                 }
             })
         });
+
+        this._model.subscribe((action) => {
+            if(action.payload.length > 0) {
+                this.#focusOnFirstInvalidField(action.payload)
+            }
+        }, 'validationComplete');
     }
 }
 

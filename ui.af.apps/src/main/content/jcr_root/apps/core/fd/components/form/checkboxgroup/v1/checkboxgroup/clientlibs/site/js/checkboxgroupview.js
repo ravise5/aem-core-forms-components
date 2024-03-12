@@ -84,6 +84,12 @@
                 widget.addEventListener('change', (e) => {
                     this.#updateModelValue(self);
                 });
+                widget.addEventListener('focus', (e) => {
+                    this.setActive();
+                });
+                widget.addEventListener('blur', (e) => {
+                    this.setInactive();
+                });
             })
         }
 
@@ -145,6 +151,12 @@
                     widget.removeAttribute("aria-readonly");
                 }
             });
+        }
+        updateRequired(required, state) {
+            if (this.widget) {
+                this.element.toggleAttribute("required", required);
+                this.element.setAttribute("data-cmp-required", required);
+            }
         }
     }
 

@@ -22,7 +22,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>core-forms-components-it-tests-core</artifactId>
+    <artifactId>core-forms-components-prefill-service</artifactId>
     <packaging>bundle</packaging>
 
 

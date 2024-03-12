@@ -78,6 +78,12 @@
                 widget.addEventListener('change', (e) => {
                     this._model.value = e.target.value;
                 });
+                widget.addEventListener('focus', (e) => {
+                    this.setActive();
+                });
+                widget.addEventListener('blur', (e) => {
+                    this.setInactive();
+                });
             });
         }
 
@@ -125,6 +131,13 @@
                 }
             }, this)
             super.updateEmptyStatus();
+        }
+
+        updateRequired(required, state) {
+            if (this.widget) {
+                this.element.toggleAttribute("required", required);
+                this.element.setAttribute("data-cmp-required", required);
+            }
         }
 
     }
